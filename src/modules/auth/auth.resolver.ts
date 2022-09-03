@@ -1,13 +1,20 @@
-import { Args, Mutation, Resolver, Query, Context } from '@nestjs/graphql';
+import {
+  Args,
+  Context,
+  Mutation,
+  OmitType,
+  Query,
+  Resolver,
+} from '@nestjs/graphql';
 import { UsersService } from '../users/users.service';
-import { User } from '../users/schemas/users.schema';
-import { UseGuards, Response, Res } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+import { LoginOutput, User } from '../users/schemas/users.schema';
+import { UseGuards } from '@nestjs/common';
 import { LocalAuthGuard } from '../../guards/local-auth.guard';
-import { JwtService } from '@nestjs/jwt';
 import { AuthService } from './auth.service';
 import { jwtConfig } from '../../config/jwt-config';
 import { JwtAuthGuard } from '../../guards/jwt-auth.guard';
+import { CurrentUser } from '../../utils/decorators/current-user';
+import { JwtRefreshAuthGuard } from '../../guards/jwt-refresh-auth.guard';
 
 @Resolver()
 export class AuthResolver {
@@ -17,19 +24,23 @@ export class AuthResolver {
   ) {}
 
   @UseGuards(LocalAuthGuard)
-  @Query(() => User)
+  @Query(() => LoginOutput)
   async login(
     @Args('email', { type: () => String }) email: string,
     @Args('password', { type: () => String }) password: string,
     @Context() ctx,
   ) {
-    const user = await this.usersService.getUser(ctx.req.body.email);
-    const accessToken = this.authServise.login(ctx.req.body);
-    ctx.res.cookie('access_token', accessToken, {
+    const { accessToken, refreshToken, fullUser } =
+      await this.authServise.login(ctx.req.body);
+    ctx.res.cookie(jwtConfig.accessTokenName, accessToken, {
       maxAge: jwtConfig.accessAge,
-      httpOnly: true,
+      httpOnly: jwtConfig.httpOnly,
     });
-    return user;
+    ctx.res.cookie(jwtConfig.refreshTokenName, refreshToken, {
+      maxAge: jwtConfig.refreshAge,
+      httpOnly: jwtConfig.httpOnly,
+    });
+    return fullUser;
   }
 
   @Mutation(() => User)
@@ -47,8 +58,18 @@ export class AuthResolver {
 
   @UseGuards(JwtAuthGuard)
   @Query(() => User)
-  async me(@Context() ctx) {
-    console.log(ctx.req.body.email);
-    const user = await this.usersService.getUser(ctx.req.body.email);
+  async profile(@CurrentUser() user) {
+    return await this.usersService.getUser(user.email);
+  }
+
+  @UseGuards(JwtRefreshAuthGuard)
+  @Query(() => String)
+  async refresh(@Context() ctx, @CurrentUser() user) {
+    const accessToken = this.authServise.getAccessToken(user);
+    ctx.res.cookie(jwtConfig.accessTokenName, accessToken, {
+      maxAge: jwtConfig.accessAge,
+      httpOnly: jwtConfig.httpOnly,
+    });
+    return 'Success';
   }
 }

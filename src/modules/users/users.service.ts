@@ -17,6 +17,7 @@ export class UsersService {
     const salt = Number(this.configService.get('database.saltOrRounds'));
     const hash = await bcrypt.hash(user.password, salt);
     const createdUser = new this.usersModel({ ...user, password: hash });
+
     return await createdUser.save();
   }
 

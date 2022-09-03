@@ -15,9 +15,20 @@ type User {
   password: String!
 }
 
+type LoginOutput {
+  _id: String!
+
+  """User name """
+  name: String!
+
+  """User email """
+  email: String!
+}
+
 type Query {
-  login(email: String!, password: String!): User!
-  me: User!
+  login(email: String!, password: String!): LoginOutput!
+  profile: User!
+  refresh: String!
 }
 
 type Mutation {

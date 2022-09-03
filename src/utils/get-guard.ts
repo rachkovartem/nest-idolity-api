@@ -1,14 +1,20 @@
-import { ExecutionContext } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { AuthService } from '../modules/auth/auth.service';
+import { ExecutionContext } from '@nestjs/common';
 import { GqlExecutionContext } from '@nestjs/graphql';
 
 export const getGuard = (type: string) =>
-  class LocalAuthGuard extends AuthGuard(type) {
+  class Guard extends AuthGuard(type) {
     getRequest(context: ExecutionContext) {
       const ctx = GqlExecutionContext.create(context);
       const gqlReq = ctx.getContext().req;
+
       if (gqlReq) {
-        gqlReq.body = ctx.getArgs();
+        if (type === 'local') {
+          gqlReq.body = ctx.getArgs();
+        } else {
+          gqlReq.user = ctx.getArgs();
+        }
         return gqlReq;
       }
       return context.switchToHttp().getRequest();

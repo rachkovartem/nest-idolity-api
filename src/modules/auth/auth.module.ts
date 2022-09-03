@@ -6,8 +6,8 @@ import { AuthResolver } from './auth.resolver';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { jwtConfig } from '../../config/jwt-config';
 import { JwtStrategy } from '../../guards/strategies/jwt.strategy';
+import { JwtRefreshStrategy } from '../../guards/strategies/jwt-refresh.strategy';
 
 @Module({
   imports: [
@@ -17,9 +17,6 @@ import { JwtStrategy } from '../../guards/strategies/jwt.strategy';
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
         secret: configService.get('JWT_SECRET_KEY'),
-        signOptions: {
-          expiresIn: jwtConfig.accessAge,
-        },
       }),
       inject: [ConfigService],
     }),
@@ -28,6 +25,7 @@ import { JwtStrategy } from '../../guards/strategies/jwt.strategy';
     AuthService,
     LocalStrategy,
     JwtStrategy,
+    JwtRefreshStrategy,
     AuthResolver,
     ConfigService,
   ],
