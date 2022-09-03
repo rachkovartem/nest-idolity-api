@@ -1,0 +1,25 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type User {
+  _id: String!
+
+  """User name """
+  name: String!
+
+  """User email """
+  email: String!
+
+  """User role"""
+  password: String!
+}
+
+type Query {
+  login(email: String!, password: String!): User!
+  me: User!
+}
+
+type Mutation {
+  createUser(name: String!, email: String!, password: String!): User!
+}

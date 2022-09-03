@@ -1,5 +1,5 @@
 import { Connection } from 'mongoose';
-import { UsersSchema } from './users.schema';
+import { UsersSchema } from './schemas/users.schema';
 
 export const userProviders = [
   {
