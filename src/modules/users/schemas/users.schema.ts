@@ -1,4 +1,4 @@
-import { Field, InputType, ObjectType, OmitType } from '@nestjs/graphql';
+import { Field, ObjectType, OmitType } from '@nestjs/graphql';
 import mongoose, { Schema as MongooseSchema } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Subscription } from '../../subscriptions/schemas/subscription.schema';
@@ -40,7 +40,7 @@ export class User {
     type: Array,
     default: [],
   })
-  @Prop({ type: [Subscription], ref: Subscription.name })
+  @Prop([{ type: MongooseSchema.Types.ObjectId, ref: 'subscription' }])
   @Field(() => [Subscription])
   public subscriptions?: Subscription[];
 }

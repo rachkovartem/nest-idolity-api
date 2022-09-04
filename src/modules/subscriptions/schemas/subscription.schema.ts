@@ -1,21 +1,23 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { Schema as MongooseSchema } from 'mongoose';
+import mongoose, { Schema as MongooseSchema } from 'mongoose';
 import { Prop, SchemaFactory } from '@nestjs/mongoose';
-import { User } from '../../users/schemas/users.schema';
+import { User, UsersSchema } from '../../users/schemas/users.schema';
 
 @ObjectType()
 export class Subscription {
   @Field(() => String)
-  _id: MongooseSchema.Types.ObjectId;
+  public _id: MongooseSchema.Types.ObjectId;
+  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'user' })
   @Field(() => String)
-  subscriber: string;
+  public subscriber: User;
+  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'user' })
   @Field(() => String)
-  recipient: string;
+  public recipient: User;
   @Prop({
     default: new Date().toISOString(),
   })
   @Field(() => String)
-  dateOfSubscribe: string;
+  public dateOfSubscribe: string;
 }
 
 export const SubscriptionSchema = SchemaFactory.createForClass(Subscription);
