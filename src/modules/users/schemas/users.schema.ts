@@ -1,18 +1,19 @@
 import { Field, InputType, ObjectType, OmitType } from '@nestjs/graphql';
-import { Schema as MongooseSchema } from 'mongoose';
+import mongoose, { Schema as MongooseSchema } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Subscription } from '../../subscriptions/schemas/subscription.schema';
 
 @Schema()
 @ObjectType()
 export class User {
   @Field(() => String)
-  _id?: MongooseSchema.Types.ObjectId;
+  public _id?: MongooseSchema.Types.ObjectId;
   @Prop({
     minlength: [4, 'minLength4'],
     required: [true, 'emailRequired'],
   })
   @Field(() => String, { description: 'User name ' })
-  name: string;
+  public name: string;
   @Prop({
     unique: true,
     validate: {
@@ -28,13 +29,20 @@ export class User {
     required: [true, 'emailRequired'],
   })
   @Field(() => String, { description: 'User email ' })
-  email: string;
+  public email: string;
   @Prop({
     select: false,
     required: [true, 'passwordRequired'],
   })
   @Field(() => String, { description: 'User password' })
-  password: string;
+  public password: string;
+  @Prop({
+    type: Array,
+    default: [],
+  })
+  @Prop({ type: [Subscription], ref: Subscription.name })
+  @Field(() => [Subscription])
+  public subscriptions?: Subscription[];
 }
 
 export const UsersSchema = SchemaFactory.createForClass(User);

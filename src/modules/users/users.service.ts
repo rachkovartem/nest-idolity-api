@@ -3,7 +3,6 @@ import { Model } from 'mongoose';
 import { User } from './schemas/users.schema';
 import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
-import e from 'express';
 
 @Injectable()
 export class UsersService {

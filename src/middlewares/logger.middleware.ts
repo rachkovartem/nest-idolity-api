@@ -42,7 +42,7 @@ export class LoggerMiddleware implements ApolloServerPlugin {
               console.error(error);
             }
           });
-          return;
+          return ctx;
         }
         const log = {
           time: reqTime,
@@ -55,6 +55,7 @@ export class LoggerMiddleware implements ApolloServerPlugin {
             console.error(error);
           }
         });
+        return ctx;
       },
     };
   }

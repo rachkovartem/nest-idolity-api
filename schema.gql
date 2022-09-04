@@ -2,6 +2,13 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Subscription {
+  _id: String!
+  subscriber: String!
+  recipient: String!
+  dateOfSubscribe: String!
+}
+
 type User {
   _id: String!
 
@@ -13,6 +20,7 @@ type User {
 
   """User password"""
   password: String!
+  subscriptions: [Subscription!]!
 }
 
 type UserOmitPassword {
@@ -23,6 +31,7 @@ type UserOmitPassword {
 
   """User email """
   email: String!
+  subscriptions: [Subscription!]!
 }
 
 type Query {
@@ -32,5 +41,6 @@ type Query {
 }
 
 type Mutation {
+  test(email: String!): UserOmitPassword!
   createUser(name: String!, email: String!, password: String!): UserOmitPassword!
 }

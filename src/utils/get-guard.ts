@@ -8,7 +8,6 @@ export const getGuard = (type: string) =>
     getRequest(context: ExecutionContext) {
       const ctx = GqlExecutionContext.create(context);
       const gqlReq = ctx.getContext().req;
-
       if (gqlReq) {
         if (type === 'local') {
           gqlReq.body = ctx.getArgs();
