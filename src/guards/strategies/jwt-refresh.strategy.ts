@@ -4,13 +4,19 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
 import { AuthService } from '../../modules/auth/auth.service';
 import { jwtConfig } from '../../config/jwt-config';
+import { parseCookie } from '../../utils/parse-cookie';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class JwtRefreshStrategy extends PassportStrategy(
   Strategy,
   'jwt-refresh',
 ) {
-  constructor(configService: ConfigService, authService: AuthService) {
+  constructor(
+    configService: ConfigService,
+    authService: AuthService,
+    private jwtService: JwtService,
+  ) {
     super({
       jwtFromRequest: (request) =>
         authService.cookieExtractor({
@@ -23,10 +29,16 @@ export class JwtRefreshStrategy extends PassportStrategy(
       signOptions: {
         expiresIn: jwtConfig.refreshAge,
       },
+      passReqToCallback: true,
     });
   }
 
-  async validate(payload: any) {
-    return { password: payload.sub, email: payload.username };
+  async validate(req, { email, password }) {
+    const refreshToken = parseCookie(req.headers.cookie).refresh_token;
+    const user = this.jwtService.decode(refreshToken);
+    if (typeof user !== 'string') {
+      return { password, email, _id: user._id };
+    }
+    return { password, email };
   }
 }

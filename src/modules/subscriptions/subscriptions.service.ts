@@ -18,8 +18,6 @@ export class SubscriptionsService {
       recipient: recipientEmail,
       subscriber: userEmail,
     });
-    console.log(recipientEmail, userEmail);
-    console.log(subscription);
     return subscription;
   }
 }

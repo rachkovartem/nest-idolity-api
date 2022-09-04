@@ -26,12 +26,12 @@ export class AuthService {
   }
 
   async login({ email, password }) {
-    const payload = { username: email, sub: password };
-    const accessToken = this.getAccessToken({ email, password });
+    const fullUser = await this.usersService.getUserWithPassword(email);
+    const payload = { email, password, _id: fullUser._id };
+    const accessToken = this.getAccessToken(payload);
     const refreshToken = this.jwtService.sign(payload, {
       expiresIn: jwtConfig.refreshAge,
     });
-    const fullUser = await this.usersService.getUserWithPassword(email);
     return { accessToken, refreshToken, fullUser };
   }
 
@@ -42,6 +42,7 @@ export class AuthService {
   }
 
   cookieExtractor({ cookieName, request }) {
+    if (!request.headers.cookie) return null;
     const cookies = parseCookie(request.headers.cookie);
     return cookies[cookieName];
   }
