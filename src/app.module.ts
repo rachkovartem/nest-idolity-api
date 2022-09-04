@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { UsersModule } from './modules/users/users.module';
 import { ConfigModule } from '@nestjs/config';
 import configuration from './config/configuration';
@@ -6,6 +6,7 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { AuthModule } from './modules/auth/auth.module';
 import { cors } from './config/cors';
+import { LoggerMiddleware } from './middlewares/logger.middleware';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { cors } from './config/cors';
       autoSchemaFile: 'schema.gql',
       context: (ctx) => ctx,
       cors,
+      plugins: [new LoggerMiddleware()],
     }),
     UsersModule,
     AuthModule,
