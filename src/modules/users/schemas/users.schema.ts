@@ -8,8 +8,8 @@ export class User {
   @Field(() => String)
   _id?: MongooseSchema.Types.ObjectId;
   @Prop({
-    minlength: [4, 'Name min length: 4'],
-    required: [true, 'Email required'],
+    minlength: [4, 'minLength4'],
+    required: [true, 'emailRequired'],
   })
   @Field(() => String, { description: 'User name ' })
   name: string;
@@ -23,21 +23,21 @@ export class User {
         }
         return true;
       },
-      message: () => 'The specified email address is already in use.',
+      message: () => 'emailAlreadyInUse',
     },
-    required: [true, 'Email required'],
+    required: [true, 'emailRequired'],
   })
   @Field(() => String, { description: 'User email ' })
   email: string;
   @Prop({
     select: false,
-    required: [true, 'Password required'],
+    required: [true, 'passwordRequired'],
   })
-  @Field(() => String, { description: 'User role' })
+  @Field(() => String, { description: 'User password' })
   password: string;
 }
 
 export const UsersSchema = SchemaFactory.createForClass(User);
 
 @ObjectType()
-export class LoginOutput extends OmitType(User, ['password']) {}
+export class UserOmitPassword extends OmitType(User, ['password']) {}

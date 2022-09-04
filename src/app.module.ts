@@ -5,6 +5,7 @@ import configuration from './config/configuration';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { AuthModule } from './modules/auth/auth.module';
+import { cors } from './config/cors';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { AuthModule } from './modules/auth/auth.module';
       playground: true,
       autoSchemaFile: 'schema.gql',
       context: (ctx) => ctx,
+      cors,
     }),
     UsersModule,
     AuthModule,

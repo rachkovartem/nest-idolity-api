@@ -14,12 +14,14 @@ export class AuthService {
 
   async validateUser(email: string, password: string) {
     const user = await this.usersService.getUserWithPassword(email);
+
+    if (!user) return null;
+
     const { password: dbPassword, ...result } = user;
     const isValid = await bcrypt.compare(password, dbPassword);
 
-    if (user && isValid) {
-      return result;
-    }
+    if (isValid) return result;
+
     return null;
   }
 

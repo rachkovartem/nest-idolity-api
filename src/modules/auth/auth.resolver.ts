@@ -7,8 +7,12 @@ import {
   Resolver,
 } from '@nestjs/graphql';
 import { UsersService } from '../users/users.service';
-import { LoginOutput, User } from '../users/schemas/users.schema';
-import { UseGuards } from '@nestjs/common';
+import { User, UserOmitPassword } from '../users/schemas/users.schema';
+import {
+  ConflictException,
+  NotFoundException,
+  UseGuards,
+} from '@nestjs/common';
 import { LocalAuthGuard } from '../../guards/local-auth.guard';
 import { AuthService } from './auth.service';
 import { jwtConfig } from '../../config/jwt-config';
@@ -20,56 +24,67 @@ import { JwtRefreshAuthGuard } from '../../guards/jwt-refresh-auth.guard';
 export class AuthResolver {
   constructor(
     private readonly usersService: UsersService,
-    private readonly authServise: AuthService,
+    private readonly authService: AuthService,
   ) {}
 
   @UseGuards(LocalAuthGuard)
-  @Query(() => LoginOutput)
+  @Query(() => UserOmitPassword)
   async login(
     @Args('email', { type: () => String }) email: string,
     @Args('password', { type: () => String }) password: string,
     @Context() ctx,
   ) {
     const { accessToken, refreshToken, fullUser } =
-      await this.authServise.login(ctx.req.body);
+      await this.authService.login(ctx.req.body);
+
     ctx.res.cookie(jwtConfig.accessTokenName, accessToken, {
       maxAge: jwtConfig.accessAge,
       httpOnly: jwtConfig.httpOnly,
     });
+
     ctx.res.cookie(jwtConfig.refreshTokenName, refreshToken, {
       maxAge: jwtConfig.refreshAge,
       httpOnly: jwtConfig.httpOnly,
     });
+
     return fullUser;
   }
 
-  @Mutation(() => User)
+  @Mutation(() => UserOmitPassword)
   async createUser(
     @Args('name', { type: () => String }) name: string,
     @Args('email', { type: () => String }) email: string,
     @Args('password', { type: () => String }) password: string,
   ) {
-    return await this.usersService.create({
-      name,
-      email,
-      password,
-    });
+    try {
+      return await this.usersService.create({
+        name,
+        email,
+        password,
+      });
+    } catch (error) {
+      return error;
+    }
   }
 
   @UseGuards(JwtAuthGuard)
   @Query(() => User)
   async profile(@CurrentUser() user) {
-    return await this.usersService.getUser(user.email);
+    try {
+      return await this.usersService.getUser(user.email);
+    } catch (error) {
+      return error;
+    }
   }
 
   @UseGuards(JwtRefreshAuthGuard)
   @Query(() => String)
   async refresh(@Context() ctx, @CurrentUser() user) {
-    const accessToken = this.authServise.getAccessToken(user);
+    const accessToken = this.authService.getAccessToken(user);
     ctx.res.cookie(jwtConfig.accessTokenName, accessToken, {
       maxAge: jwtConfig.accessAge,
       httpOnly: jwtConfig.httpOnly,
     });
-    return 'Success';
+    return 'tokenUpdated';
   }
 }

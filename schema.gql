@@ -11,11 +11,11 @@ type User {
   """User email """
   email: String!
 
-  """User role"""
+  """User password"""
   password: String!
 }
 
-type LoginOutput {
+type UserOmitPassword {
   _id: String!
 
   """User name """
@@ -26,11 +26,11 @@ type LoginOutput {
 }
 
 type Query {
-  login(email: String!, password: String!): LoginOutput!
+  login(email: String!, password: String!): UserOmitPassword!
   profile: User!
   refresh: String!
 }
 
 type Mutation {
-  createUser(name: String!, email: String!, password: String!): User!
+  createUser(name: String!, email: String!, password: String!): UserOmitPassword!
 }
