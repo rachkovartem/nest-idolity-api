@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { User } from './schemas/users.schema';
 import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
@@ -26,5 +26,44 @@ export class UsersService {
 
   getUser(email: string) {
     return this.usersModel.findOne({ email }).exec();
+  }
+
+  async subscribeUser(subscriberId, recipientId) {
+    const resultSub = await this.usersModel.updateOne(
+      { _id: subscriberId },
+      {
+        $addToSet: {
+          subscriptions: new mongoose.Types.ObjectId(recipientId),
+        },
+      },
+    );
+    const resultRec = await this.usersModel.updateOne(
+      {
+        _id: recipientId,
+      },
+      {
+        $addToSet: {
+          subscribers: subscriberId,
+        },
+      },
+    );
+    if (resultRec.acknowledged && resultSub.acknowledged) return 'Success';
+    return 'Failed';
+  }
+
+  async getSubscriptions(id: string) {
+    const user = await this.usersModel
+      .findById(id)
+      .populate({ path: 'subscriptions', model: this.usersModel })
+      .exec();
+    return user.subscriptions || [];
+  }
+
+  async getSubscribers(id: string) {
+    const user = await this.usersModel
+      .findById(id)
+      .populate({ path: 'subscribers', model: this.usersModel })
+      .exec();
+    return user.subscribers;
   }
 }

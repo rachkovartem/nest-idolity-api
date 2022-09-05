@@ -69,7 +69,7 @@ export class AuthResolver {
 
   @UseGuards(JwtAuthGuard)
   @Query(() => User)
-  async profile(@CurrentUser() user, @Context() ctx) {
+  async profile(@CurrentUser() user) {
     try {
       return await this.usersService.getUser(user.email);
     } catch (error) {

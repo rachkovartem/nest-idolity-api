@@ -7,7 +7,7 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { AuthModule } from './modules/auth/auth.module';
 import { cors } from './config/cors';
 import { LoggerMiddleware } from './middlewares/logger.middleware';
-import { SubscriptionsModule } from './modules/subscriptions/subscriptions.module';
+import { PostsModule } from './modules/posts/posts.module';
 
 @Module({
   imports: [
@@ -26,7 +26,7 @@ import { SubscriptionsModule } from './modules/subscriptions/subscriptions.modul
     }),
     UsersModule,
     AuthModule,
-    SubscriptionsModule,
+    PostsModule,
   ],
 })
 export class AppModule {}
