@@ -21,4 +21,36 @@ export class PostsService {
       });
     } catch (err) {}
   }
+
+  async likePost(postId: string, userId) {
+    try {
+      return await this.postModel.findByIdAndUpdate(
+        postId,
+        {
+          $addToSet: {
+            likes: userId,
+          },
+        },
+        { new: true },
+      );
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async dislikePost(postId: string, userId) {
+    try {
+      return await this.postModel.findByIdAndUpdate(
+        postId,
+        {
+          $pull: {
+            likes: userId,
+          },
+        },
+        { new: true },
+      );
+    } catch (error) {
+      throw error;
+    }
+  }
 }

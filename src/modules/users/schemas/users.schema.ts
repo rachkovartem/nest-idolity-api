@@ -37,11 +37,11 @@ export class User {
   @Field(() => String, { description: 'User password' })
   public password: string;
 
-  @Prop([{ type: Types.ObjectId, ref: 'user', unique: true }])
+  @Prop([{ type: Types.ObjectId, ref: 'user' }])
   @Field(() => [User])
   public subscriptions?: Types.ObjectId;
 
-  @Prop([{ type: Types.ObjectId, ref: 'user', unique: true }])
+  @Prop([{ type: Types.ObjectId, ref: 'user' }])
   @Field(() => [User])
   public subscribers?: Types.ObjectId;
 }

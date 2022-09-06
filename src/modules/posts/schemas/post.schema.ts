@@ -20,6 +20,7 @@ export class PostContent {
 @Schema()
 @ObjectType()
 export class Post {
+  @Prop()
   @Field(() => String)
   public _id: MongooseSchema.Types.ObjectId;
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'user' })
@@ -28,9 +29,17 @@ export class Post {
   @Prop({
     default: new Date().toISOString(),
   })
-  @Field(() => [String])
+  @Field(() => String)
   public date: string;
-  @Prop([{ type: MongooseSchema.Types.ObjectId, ref: 'user', default: [] }])
+  @Prop([
+    {
+      type: MongooseSchema.Types.ObjectId,
+      ref: 'user',
+      default: [],
+      unique: true,
+    },
+  ])
+  @Field(() => [String])
   likes?: MongooseSchema.Types.ObjectId[];
   @Prop({ type: PostContent })
   @Field(() => PostContent)

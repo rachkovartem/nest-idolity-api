@@ -38,7 +38,8 @@ type PostContent {
 type Post {
   _id: String!
   author: User!
-  date: [String!]!
+  date: String!
+  likes: [String!]!
   content: PostContent!
 }
 
@@ -48,11 +49,13 @@ type Query {
   login(email: String!, password: String!): UserOmitPassword!
   profile: User!
   refresh: String!
-  getMyPosts: [Post!]!
+  myPosts: [Post!]!
 }
 
 type Mutation {
   createSubscription(recipientId: String!): String!
   createUser(name: String!, email: String!, password: String!): UserOmitPassword!
   createPost(text: String!, images: [String!]!, videos: [String!]!): Post!
+  likePost(postId: String!): Post!
+  dislikePost(postId: String!): Post!
 }

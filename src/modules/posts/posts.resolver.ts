@@ -4,7 +4,6 @@ import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CurrentUser } from '../../utils/decorators/current-user';
 import { PostsService } from './posts.service';
 import { Post } from './schemas/post.schema';
-import { query } from 'express';
 
 @Resolver()
 export class PostsResolver {
@@ -30,7 +29,25 @@ export class PostsResolver {
 
   @UseGuards(JwtAuthGuard)
   @Query(() => [Post])
-  async getMyPosts(@CurrentUser() user) {
+  async myPosts(@CurrentUser() user) {
     return await this.postService.getUserPosts(user._id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Mutation(() => Post)
+  async likePost(
+    @Args('postId', { type: () => String }) postId: string,
+    @CurrentUser() user,
+  ) {
+    return await this.postService.likePost(postId, user._id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Mutation(() => Post)
+  async dislikePost(
+    @Args('postId', { type: () => String }) postId: string,
+    @CurrentUser() user,
+  ) {
+    return await this.postService.dislikePost(postId, user._id);
   }
 }
