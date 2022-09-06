@@ -26,16 +26,13 @@ export class LoggerMiddleware implements ApolloServerPlugin {
       async willSendResponse(resCtx) {
         const end = performance.now();
         const elapsedTime = `${Math.round(end - start)}ms`;
+        const queryString = JSON.stringify(query).replace(/\\n/g, '');
 
         if (resCtx.errors) {
           const errorsStacks = resCtx.errors.map((error) => error.stack);
-          const log = {
-            time: reqTime,
-            elapsedTime,
-            ip,
-            query,
-            stack: errorsStacks,
-          };
+          const log = `${reqTime}| error | elapsed time:{elapsedTime} | ip: ${ip} | ${queryString} | ${JSON.stringify(
+            errorsStacks,
+          )}\n`;
 
           fs.appendFile(dir + 'errors.log', JSON.stringify(log), (error) => {
             if (error) {
@@ -44,13 +41,8 @@ export class LoggerMiddleware implements ApolloServerPlugin {
           });
           return ctx;
         }
-        const log = {
-          time: reqTime,
-          elapsedTime,
-          ip,
-          query,
-        };
-        fs.appendFile(dir + 'requests.log', JSON.stringify(log), (error) => {
+        const log = `${reqTime} | info | elapsed time: ${elapsedTime} | ${ip} | ${queryString} | No errors\n`;
+        fs.appendFile(dir + 'requests.log', log, (error) => {
           if (error) {
             console.error(error);
           }
