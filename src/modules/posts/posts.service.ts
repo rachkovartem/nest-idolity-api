@@ -1,12 +1,24 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
-import { ConfigService } from '@nestjs/config';
-import { Post } from './schemas/post.schema';
+import { Post, PostContent } from './schemas/post.schema';
 
 @Injectable()
 export class PostsService {
   constructor(
     @Inject('POST_MODEL')
-    private subscriptionModel: Model<Post>,
+    private postModel: Model<Post>,
   ) {}
+
+  async createPost(postData: PostContent, userId: string) {
+    const post = new this.postModel({ content: postData, author: userId });
+    return await post.save();
+  }
+
+  async getUserPosts(userId: string) {
+    try {
+      return await this.postModel.find({
+        author: userId,
+      });
+    } catch (err) {}
+  }
 }
