@@ -10,10 +10,6 @@ import { PostsModule } from './modules/posts/posts.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      load: [configuration],
-      isGlobal: true,
-    }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       debug: true,
@@ -26,6 +22,10 @@ import { PostsModule } from './modules/posts/posts.module';
         credentials: true,
       },
       plugins: [new LoggerMiddleware()],
+    }),
+    ConfigModule.forRoot({
+      load: [configuration],
+      isGlobal: true,
     }),
     UsersModule,
     AuthModule,
