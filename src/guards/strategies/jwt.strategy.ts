@@ -25,7 +25,6 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
       usernameField: 'email',
       signOptions: {
         expiresIn: jwtConfig.accessAge,
-        sameSite: 'none',
       },
       passReqToCallback: true,
     });

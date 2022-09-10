@@ -4,4 +4,5 @@ export const jwtConfig = {
   accessTokenName: 'access_token',
   refreshTokenName: 'refresh_token',
   httpOnly: true,
+  sameSite: 'none',
 };

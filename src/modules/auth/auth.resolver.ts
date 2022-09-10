@@ -40,11 +40,13 @@ export class AuthResolver {
     ctx.res.cookie(jwtConfig.accessTokenName, accessToken, {
       maxAge: jwtConfig.accessAge,
       httpOnly: jwtConfig.httpOnly,
+      sameSite: jwtConfig.sameSite,
     });
 
     ctx.res.cookie(jwtConfig.refreshTokenName, refreshToken, {
       maxAge: jwtConfig.refreshAge,
       httpOnly: jwtConfig.httpOnly,
+      sameSite: jwtConfig.sameSite,
     });
 
     return fullUser;
@@ -84,6 +86,7 @@ export class AuthResolver {
     ctx.res.cookie(jwtConfig.accessTokenName, accessToken, {
       maxAge: jwtConfig.accessAge,
       httpOnly: jwtConfig.httpOnly,
+      sameSite: jwtConfig.sameSite,
     });
     return 'tokenUpdated';
   }
