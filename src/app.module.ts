@@ -5,7 +5,6 @@ import configuration from './config/configuration';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { AuthModule } from './modules/auth/auth.module';
-import { cors } from './config/cors';
 import { LoggerMiddleware } from './middlewares/logger.middleware';
 import { PostsModule } from './modules/posts/posts.module';
 
@@ -20,8 +19,12 @@ import { PostsModule } from './modules/posts/posts.module';
       debug: true,
       playground: true,
       autoSchemaFile: 'schema.gql',
+      csrfPrevention: true,
       context: (ctx) => ctx,
-      cors,
+      cors: {
+        origin: ['http://localhost:3000'],
+        credentials: true,
+      },
       plugins: [new LoggerMiddleware()],
     }),
     UsersModule,
