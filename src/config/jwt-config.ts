@@ -5,4 +5,5 @@ export const jwtConfig = {
   refreshTokenName: 'refresh_token',
   httpOnly: true,
   sameSite: 'none',
+  secure: false,
 };
