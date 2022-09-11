@@ -1,18 +1,7 @@
-import {
-  Args,
-  Context,
-  Mutation,
-  OmitType,
-  Query,
-  Resolver,
-} from '@nestjs/graphql';
+import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { UsersService } from '../users/users.service';
 import { User, UserOmitPassword } from '../users/schemas/users.schema';
-import {
-  ConflictException,
-  NotFoundException,
-  UseGuards,
-} from '@nestjs/common';
+import { UseGuards } from '@nestjs/common';
 import { LocalAuthGuard } from '../../guards/local-auth.guard';
 import { AuthService } from './auth.service';
 import { jwtConfig } from '../../config/jwt-config';
@@ -40,11 +29,15 @@ export class AuthResolver {
     ctx.res.cookie(jwtConfig.accessTokenName, accessToken, {
       maxAge: jwtConfig.accessAge,
       httpOnly: jwtConfig.httpOnly,
+      sameSite: jwtConfig.sameSite,
+      secure: jwtConfig.secure,
     });
 
     ctx.res.cookie(jwtConfig.refreshTokenName, refreshToken, {
       maxAge: jwtConfig.refreshAge,
       httpOnly: jwtConfig.httpOnly,
+      sameSite: jwtConfig.sameSite,
+      secure: jwtConfig.secure,
     });
 
     return fullUser;
@@ -84,6 +77,8 @@ export class AuthResolver {
     ctx.res.cookie(jwtConfig.accessTokenName, accessToken, {
       maxAge: jwtConfig.accessAge,
       httpOnly: jwtConfig.httpOnly,
+      sameSite: jwtConfig.sameSite,
+      secure: jwtConfig.secure,
     });
     return 'tokenUpdated';
   }
