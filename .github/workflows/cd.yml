@@ -2,7 +2,7 @@
 
 name: Node.js CD
 
-# Controls when the action will run. 
+# Controls when the action will run.
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
   push:
@@ -25,10 +25,8 @@ jobs:
           key: ${{ secrets.SSHKEY }}
           port: 22
           script: |
-            cd /home/rycha/nest-idolity-api
+            cd /home/rycha/idolity/nest-idolity-api
             git pull origin main
             git status
-            export NVM_DIR=~/.nvm
-            source ~/.nvm/nvm.sh
-            npm install
-            pm2 restart idolity-api
+            cd /home/rycha/idolity
+            docker compose up --build
