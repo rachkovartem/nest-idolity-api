@@ -4,14 +4,8 @@
 
 type User {
   _id: String!
-
-  """User name """
   name: String!
-
-  """User email """
   email: String!
-
-  """User password"""
   password: String!
   subscriptions: [User!]!
   subscribers: [User!]!
@@ -19,11 +13,7 @@ type User {
 
 type UserOmitPassword {
   _id: String!
-
-  """User name """
   name: String!
-
-  """User email """
   email: String!
   subscriptions: [User!]!
   subscribers: [User!]!

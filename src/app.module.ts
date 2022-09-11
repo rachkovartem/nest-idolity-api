@@ -22,6 +22,17 @@ import { PostsModule } from './modules/posts/posts.module';
         credentials: true,
       },
       plugins: [new LoggerMiddleware()],
+      formatError: (err) => {
+        // Don't give the specific errors to the client.
+        if (err.message.includes('tKey:')) {
+          const key = err.message.split('tKey:')[1];
+          return new Error(`tKey:${key}`);
+        }
+
+        // Otherwise return the original error. The error can also
+        // be manipulated in other ways, as long as it's returned.
+        return err;
+      },
     }),
     ConfigModule.forRoot({
       load: [configuration],
