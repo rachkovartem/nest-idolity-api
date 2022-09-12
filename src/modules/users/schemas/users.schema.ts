@@ -2,6 +2,7 @@ import { Field, ObjectType, OmitType } from '@nestjs/graphql';
 import { Types } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import * as Joi from 'joi';
+import i18nMessages from '../../../config/i18n-messages';
 
 @Schema({
   validateBeforeSave: true,
@@ -11,8 +12,8 @@ export class User {
   @Field(() => String)
   public _id?: Types.ObjectId;
   @Prop({
-    minlength: [4, 'tKey:minLengthName'],
-    required: [true, 'tKey:emailRequired'],
+    minlength: [4, i18nMessages.minLengthName],
+    required: [true, i18nMessages.nameRequired],
   })
   @Field(() => String)
   public name: string;
@@ -27,7 +28,7 @@ export class User {
           }
           return true;
         },
-        message: () => 'tKey:emailAlreadyInUse',
+        message: () => i18nMessages.emailAlreadyInUse,
       },
       {
         validator: function (email) {
@@ -41,17 +42,17 @@ export class User {
             return false;
           }
         },
-        message: () => 'tKey:incorrectEmailFormat',
+        message: () => i18nMessages.incorrectEmailFormat,
       },
     ],
-    required: [true, 'tKey:emailRequired'],
+    required: [true, i18nMessages.emailRequired],
   })
   @Field(() => String)
   public email: string;
 
   @Prop({
     select: false,
-    required: [true, 'tKey:passwordRequired'],
+    required: [true, i18nMessages.passwordRequired],
   })
   @Field(() => String)
   public password: string;
